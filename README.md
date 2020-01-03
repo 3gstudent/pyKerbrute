@@ -33,7 +33,7 @@ EnumADUser.py 192.168.1.1 test.com user.txt tcp
 
 ### ADPwdSpray.py
 
-Use Kerberos pre-authentication to test a single password against a list of Active Directory accounts.
+Use Kerberos pre-authentication to test a single password or NTML hash against a list of Active Directory accounts.
 
 #### Usage:
 
