@@ -10,7 +10,7 @@ https://github.com/mubix/pykek
 
 PyKerbrute is my exercise of learing Kerberos and Python.
 
-Kerbrute is a good tool to bruteforce and enumerate valid Active Directory accounts.It's faster and potentially stealthier since pre-authentication failures do not trigger that "traditional" An account failed to log on event 4625.So I tried to implement it with Python.I refer to [pykek](https://github.com/mubix/pykek) in the writing of Python code.
+[Kerbrute](https://github.com/ropnop/kerbrute) is a good tool to bruteforce and enumerate valid Active Directory accounts.It's faster and potentially stealthier since pre-authentication failures do not trigger that "traditional" An account failed to log on event 4625.So I tried to implement it with Python.I refer to [pykek](https://github.com/mubix/pykek) in the writing of Python code.
 
 Kerbrute validates a username or test a login by only sending one UDP frame to the KDC (Domain Controller).My PyKerbrute adds support for TCP.And you can test the NTML hash of Active Directory accounts.
 
