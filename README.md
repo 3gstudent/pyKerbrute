@@ -21,7 +21,8 @@ Use Kerberos pre-authentication to enumerate valid Active Directory accounts.
 #### Usage:
 
 ```
-EnumADUser.py <domainControlerAddr> <domainName>
+EnumADUser.py <domainControlerAddr> <domainName> <mode>
+<mode>: tcp or udp
 ```
 
 Eg.
@@ -38,6 +39,7 @@ Use Kerberos pre-authentication to test a single password against a list of Acti
 
 ```
 ADPwdSpray.py <domainControlerAddr> <domainName> <file> <passwordtype> <data> <mode>
+<mode>: tcp or udp
 ```
 
 Eg.
