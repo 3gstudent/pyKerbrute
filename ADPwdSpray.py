@@ -10,7 +10,8 @@ from pyasn1.type.tag import Tag, tagClassContext, tagClassApplication, tagFormat
 from pyasn1.codec.der.encoder import encode
 from struct import pack, unpack
 from pyasn1.type.namedtype import NamedTypes, NamedType, OptionalNamedType
-from _crypto import ARC4, MD5, MD4
+from Crypto.Cipher import ARC4
+from Crypto.Cipher import MD4, MD5
 from time import time, gmtime, strftime, strptime, localtime
 import hmac as HMAC
 from random import getrandbits, sample
